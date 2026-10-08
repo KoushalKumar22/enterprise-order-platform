@@ -1,6 +1,6 @@
 package com.koushal.inventory.service;
 
-import com.koushal.orderplatform.entity.Inventory;
+import com.koushal.inventory.entity.Inventory;
 
 import java.util.List;
 

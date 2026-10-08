@@ -29,7 +29,7 @@ public class Product {
     @Column(nullable = false)
     private ProductStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -89,12 +89,12 @@ public class Product {
         this.status = status;
     }
 
-    public Category getCategory() {
+    public Category getCategoryId() {
         return category;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Category categoryId) {
+        this.category = categoryId;
     }
 
     public LocalDateTime getCreatedAt() {

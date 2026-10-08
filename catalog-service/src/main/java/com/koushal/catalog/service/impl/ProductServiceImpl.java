@@ -22,17 +22,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product) {
 
-        if (product.getCategory() == null ||
-                product.getCategory().getId() == null) {
+        if (product.getCategoryId() == null ||
+                product.getCategoryId().getId() == null) {
 
             throw new RuntimeException("Product is required");
         }
 
-        Long categoryId = product.getCategory().getId();
+        Long categoryId = product.getCategoryId().getId();
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
-        product.setCategory(category);
+        product.setCategoryId(category);
 
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());

@@ -12,12 +12,15 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+//    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false, unique = true)
-    private Product product;
+    private Long productId;
 
     @Column(nullable = false)
     private Integer avaliableQuantity;
+
+    @Column(nullable = false)
+    private Integer reservedQuantity;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -34,12 +37,20 @@ public class Inventory {
         Id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Integer getReservedQuantity() {
+        return reservedQuantity;
+    }
+
+    public void setReservedQuantity(Integer reservedQuantity) {
+        this.reservedQuantity = reservedQuantity;
     }
 
     public Integer getAvaliableQuantity() {

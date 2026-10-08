@@ -1,10 +1,8 @@
 package com.koushal.inventory.service.impl;
 
-import com.koushal.orderplatform.entity.Inventory;
-import com.koushal.orderplatform.entity.Product;
-import com.koushal.orderplatform.repository.InventoryRepository;
-import com.koushal.orderplatform.repository.ProductRepository;
-import com.koushal.orderplatform.service.InventoryService;
+import com.koushal.inventory.entity.Inventory;
+import com.koushal.inventory.repository.InventoryRepository;
+import com.koushal.inventory.service.InventoryService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,30 +10,17 @@ import java.util.List;
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
-    private final ProductRepository productRepository;
 
-    public InventoryServiceImpl(InventoryRepository inventoryRepository, ProductRepository productRepository) {
+    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
-        this.productRepository = productRepository;
     }
 
     @Override
     public Inventory createInventory(Inventory inventory) {
 
-        if (inventory.getProduct() == null ||
-                inventory.getProduct().getId() == null) {
-
-            throw new RuntimeException("Product is required");
+        if (inventory.getProductId() == null) {
+            throw new RuntimeException("Product ID is required");
         }
-
-        Long productId = inventory.getProduct().getId();
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Product not found with id: " + productId));
-
-        inventory.setProduct(product);
 
         inventory.setCreatedAt(LocalDateTime.now());
         inventory.setUpdatedAt(LocalDateTime.now());
@@ -69,9 +54,6 @@ public class InventoryServiceImpl implements InventoryService {
         existingInventory.setAvaliableQuantity(
                 inventory.getAvaliableQuantity());
 
-        existingInventory.setAvaliableQuantity(
-                inventory.getAvaliableQuantity());
-
         existingInventory.setUpdatedAt(LocalDateTime.now());
 
         return inventoryRepository.save(existingInventory);
@@ -82,7 +64,7 @@ public class InventoryServiceImpl implements InventoryService {
             Long productId,
             Integer quantity) {
 
-        Inventory inventory = inventoryRepository.findById(productId)
+        Inventory inventory = inventoryRepository.findByProductId(productId)
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "Inventory not found for product id: "
