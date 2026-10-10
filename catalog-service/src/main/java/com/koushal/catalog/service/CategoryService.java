@@ -1,18 +1,19 @@
 package com.koushal.catalog.service;
 
-import com.koushal.catalog.entity.Category;
+import com.koushal.catalog.dto.CategoryRequestDto;
+import com.koushal.catalog.dto.CategoryResponseDto;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    Category createCategory(Category category);
+    CategoryResponseDto createCategory(CategoryRequestDto requestDto);
 
-    Category getCategoryById(Long id);
+    CategoryResponseDto getCategoryById(Long id);
 
-    List<Category> getAllCategories();
+    List<CategoryResponseDto> getAllCategories();
 
-    Category updateCategory(Long id, Category category);
+    CategoryResponseDto updateCategory(Long id, CategoryRequestDto category);
 
     void deleteCategory(Long id);
 }

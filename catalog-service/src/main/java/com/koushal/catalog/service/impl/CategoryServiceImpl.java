@@ -1,8 +1,11 @@
 package com.koushal.catalog.service.impl;
 
+import com.koushal.catalog.dto.CategoryRequestDto;
+import com.koushal.catalog.dto.CategoryResponseDto;
 import com.koushal.catalog.entity.Category;
 import com.koushal.catalog.repository.CategoryRepository;
 import com.koushal.catalog.service.CategoryService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,35 +15,51 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public final ModelMapper modelMapper;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public Category createCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategoryResponseDto createCategory(CategoryRequestDto requestDto) {
+        Category category = modelMapper.map(requestDto, Category.class);
+
+        Category savedctedCategory = categoryRepository.save(category);
+
+        return modelMapper.map(savedctedCategory, CategoryResponseDto.class);
     }
 
     @Override
-    public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
+    public CategoryResponseDto getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Category with id " + id + " not found"));
+                        new RuntimeException("category with id " + id + " not found"));
+
+        return modelMapper.map(category, CategoryResponseDto.class);
 
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDto> getAllCategories() {
+        return categoryRepository.findAll()
+                .stream().map(category ->
+                        modelMapper.map(category,
+                                CategoryResponseDto.class)).toList();
     }
 
     @Override
-    public Category updateCategory(Long id, Category category) {
+    public CategoryResponseDto updateCategory(Long id, CategoryRequestDto requestDto) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Category with id " + id + " not found"));
 
-        return categoryRepository.save(existingCategory);
+        existingCategory.setName(requestDto.getName());
+        
+        Category updatedCategory = categoryRepository.save(existingCategory);
+
+        return modelMapper.map(updatedCategory, CategoryResponseDto.class);
     }
 
     @Override
