@@ -1,14 +1,22 @@
 package com.koushal.catalog.service;
 
-import com.koushal.catalog.entity.Product;
+import com.koushal.catalog.dto.ProductRequestDto;
+import com.koushal.catalog.dto.ProductResponseDto;
 
 import java.util.List;
 
 public interface ProductService {
 
-    Product createProduct(Product product);
-    Product getProduct(Long id);
-    List<Product> getAllProducts();
-    Product updateProduct(Long id, Product product);
+    ProductResponseDto createProduct(ProductRequestDto requestDto);
+
+    ProductResponseDto getProductById(Long id);
+
+    List<ProductResponseDto> getAllProducts();
+
+    ProductResponseDto updateProduct(
+            Long id,
+            ProductRequestDto requestDto
+    );
+
     void deleteProduct(Long id);
 }
