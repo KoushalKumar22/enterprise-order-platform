@@ -1,18 +1,22 @@
 package com.koushal.inventory.service;
 
-import com.koushal.inventory.entity.Inventory;
+import com.koushal.inventory.dto.InventoryRequestDto;
+import com.koushal.inventory.dto.InventoryResponseDto;
 
 import java.util.List;
 
 public interface InventoryService {
 
-    Inventory createInventory(Inventory inventory);
+    InventoryResponseDto createInventory(InventoryRequestDto requestDto);
 
-    Inventory getInventoryById(Long id);
+    InventoryResponseDto getInventoryById(Long id);
 
-    List<Inventory> getAllInventory();
+    List<InventoryResponseDto> getAllInventory();
 
-    Inventory updateInventory(Long id, Inventory inventory);
+    InventoryResponseDto updateInventory(
+            Long id,
+            InventoryRequestDto requestDto
+    );
 
     boolean isProductAvailable(Long productId, Integer quantity);
 

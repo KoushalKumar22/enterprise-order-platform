@@ -17,7 +17,7 @@ public class Inventory {
     private Long productId;
 
     @Column(nullable = false)
-    private Integer avaliableQuantity;
+    private Integer availableQuantity;
 
     @Column(nullable = false)
     private Integer reservedQuantity;
@@ -53,12 +53,12 @@ public class Inventory {
         this.reservedQuantity = reservedQuantity;
     }
 
-    public Integer getAvaliableQuantity() {
-        return avaliableQuantity;
+    public Integer getAvailableQuantity() {
+        return availableQuantity;
     }
 
-    public void setAvaliableQuantity(Integer avaliableQuantity) {
-        this.avaliableQuantity = avaliableQuantity;
+    public void setAvailableQuantity(Integer availableQuantity) {
+        this.availableQuantity = availableQuantity;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,86 +1,139 @@
 package com.koushal.inventory.service.impl;
 
+import com.koushal.inventory.dto.InventoryRequestDto;
+import com.koushal.inventory.dto.InventoryResponseDto;
 import com.koushal.inventory.entity.Inventory;
 import com.koushal.inventory.repository.InventoryRepository;
 import com.koushal.inventory.service.InventoryService;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final ModelMapper modelMapper;
 
-    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
+    public InventoryServiceImpl(
+            InventoryRepository inventoryRepository,
+            ModelMapper modelMapper
+    ) {
         this.inventoryRepository = inventoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public Inventory createInventory(Inventory inventory) {
+    public InventoryResponseDto createInventory(
+            InventoryRequestDto requestDto
+    ) {
+        Inventory inventory = modelMapper.map(
+                requestDto,
+                Inventory.class
+        );
 
-        if (inventory.getProductId() == null) {
-            throw new RuntimeException("Product ID is required");
-        }
+        inventory.setReservedQuantity(0);
 
-        inventory.setCreatedAt(LocalDateTime.now());
-        inventory.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        inventory.setCreatedAt(now);
+        inventory.setUpdatedAt(now);
 
-        return inventoryRepository.save(inventory);
+        Inventory savedInventory =
+                inventoryRepository.save(inventory);
+
+        return modelMapper.map(
+                savedInventory,
+                InventoryResponseDto.class
+        );
     }
 
     @Override
-    public Inventory getInventoryById(Long id) {
-
-        return inventoryRepository.findById(id)
+    public InventoryResponseDto getInventoryById(Long id) {
+        Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Inventory not found with id: " + id));
+                                "Inventory with id " + id + " not found"
+                        ));
+
+        return modelMapper.map(
+                inventory,
+                InventoryResponseDto.class
+        );
     }
 
     @Override
-    public List<Inventory> getAllInventory() {
-
-        return inventoryRepository.findAll();
+    public List<InventoryResponseDto> getAllInventory() {
+        return inventoryRepository.findAll()
+                .stream()
+                .map(inventory ->
+                        modelMapper.map(
+                                inventory,
+                                InventoryResponseDto.class
+                        ))
+                .toList();
     }
 
     @Override
-    public Inventory updateInventory(Long id, Inventory inventory) {
+    public InventoryResponseDto updateInventory(
+            Long id,
+            InventoryRequestDto requestDto
+    ) {
+        Inventory existingInventory =
+                inventoryRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Inventory with id "
+                                                + id + " not found"
+                                ));
 
-        Inventory existingInventory = inventoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Inventory not found with id: " + id));
-
-        existingInventory.setAvaliableQuantity(
-                inventory.getAvaliableQuantity());
-
+        // Update only fields that this request is allowed to change.
+        existingInventory.setProductId(requestDto.getProductId());
+        existingInventory.setAvailableQuantity(
+                requestDto.getAvailableQuantity()
+        );
         existingInventory.setUpdatedAt(LocalDateTime.now());
 
-        return inventoryRepository.save(existingInventory);
+        Inventory updatedInventory =
+                inventoryRepository.save(existingInventory);
+
+        return modelMapper.map(
+                updatedInventory,
+                InventoryResponseDto.class
+        );
     }
 
     @Override
     public boolean isProductAvailable(
             Long productId,
-            Integer quantity) {
+            Integer quantity
+    ) {
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException(
+                    "Quantity must be greater than zero"
+            );
+        }
 
-        Inventory inventory = inventoryRepository.findByProductId(productId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Inventory not found for product id: "
-                                        + productId));
+        Inventory inventory =
+                inventoryRepository.findByProductId(productId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Inventory not found for product id: "
+                                                + productId
+                                ));
 
-        return inventory.getAvaliableQuantity() >= quantity;
+        return inventory.getAvailableQuantity() >= quantity;
     }
 
     @Override
     public void deleteInventory(Long id) {
-
-        Inventory existingInventory = inventoryRepository.findById(id)
+        Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Inventory not found with id: " + id));
+                                "Inventory with id " + id + " not found"
+                        ));
 
-        inventoryRepository.delete(existingInventory);
+        inventoryRepository.delete(inventory);
     }
 }
