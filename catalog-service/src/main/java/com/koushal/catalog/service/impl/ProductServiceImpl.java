@@ -48,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
                 Product.class
         );
 
+        product.setId(null);
         product.setCategory(category);
 
         LocalDateTime now = LocalDateTime.now();
