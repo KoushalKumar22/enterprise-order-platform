@@ -34,6 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
                 Inventory.class
         );
 
+        inventory.setId(null);
         inventory.setReservedQuantity(0);
 
         LocalDateTime now = LocalDateTime.now();
