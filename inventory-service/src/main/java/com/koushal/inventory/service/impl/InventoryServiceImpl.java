@@ -3,6 +3,7 @@ package com.koushal.inventory.service.impl;
 import com.koushal.inventory.dto.InventoryRequestDto;
 import com.koushal.inventory.dto.InventoryResponseDto;
 import com.koushal.inventory.entity.Inventory;
+import com.koushal.inventory.exception.ResourceNotFoundException;
 import com.koushal.inventory.repository.InventoryRepository;
 import com.koushal.inventory.service.InventoryService;
 import org.modelmapper.ModelMapper;
@@ -54,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService {
     public InventoryResponseDto getInventoryById(Long id) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Inventory with id " + id + " not found"
                         ));
 
@@ -84,7 +85,7 @@ public class InventoryServiceImpl implements InventoryService {
         Inventory existingInventory =
                 inventoryRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Inventory with id "
                                                 + id + " not found"
                                 ));
@@ -119,7 +120,7 @@ public class InventoryServiceImpl implements InventoryService {
         Inventory inventory =
                 inventoryRepository.findByProductId(productId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Inventory not found for product id: "
                                                 + productId
                                 ));
@@ -131,7 +132,7 @@ public class InventoryServiceImpl implements InventoryService {
     public void deleteInventory(Long id) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Inventory with id " + id + " not found"
                         ));
 

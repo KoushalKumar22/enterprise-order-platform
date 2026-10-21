@@ -4,6 +4,7 @@ import com.koushal.catalog.dto.ProductRequestDto;
 import com.koushal.catalog.dto.ProductResponseDto;
 import com.koushal.catalog.entity.Category;
 import com.koushal.catalog.entity.Product;
+import com.koushal.catalog.exception.ResourceNotFoundException;
 import com.koushal.catalog.repository.CategoryRepository;
 import com.koushal.catalog.repository.ProductRepository;
 import com.koushal.catalog.service.ProductService;
@@ -37,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository
                 .findById(requestDto.getCategoryId())
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Category with id "
                                         + requestDto.getCategoryId()
                                         + " not found"
@@ -67,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Product with id " + id + " not found"
                         ));
 
@@ -96,14 +97,14 @@ public class ProductServiceImpl implements ProductService {
     ) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Product with id " + id + " not found"
                         ));
 
         Category category = categoryRepository
                 .findById(requestDto.getCategoryId())
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Category with id "
                                         + requestDto.getCategoryId()
                                         + " not found"
@@ -127,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Product with id " + id + " not found"
                         ));
 

@@ -3,6 +3,7 @@ package com.koushal.catalog.service.impl;
 import com.koushal.catalog.dto.CategoryRequestDto;
 import com.koushal.catalog.dto.CategoryResponseDto;
 import com.koushal.catalog.entity.Category;
+import com.koushal.catalog.exception.ResourceNotFoundException;
 import com.koushal.catalog.repository.CategoryRepository;
 import com.koushal.catalog.service.CategoryService;
 import org.modelmapper.ModelMapper;
@@ -35,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponseDto getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("category with id " + id + " not found"));
+                        new ResourceNotFoundException("category with id " + id + " not found"));
 
         return modelMapper.map(category, CategoryResponseDto.class);
 
@@ -53,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponseDto updateCategory(Long id, CategoryRequestDto requestDto) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Category with id " + id + " not found"));
+                        new ResourceNotFoundException("Category with id " + id + " not found"));
 
         existingCategory.setName(requestDto.getName());
         
@@ -65,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(Long id) {
         Category existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
         categoryRepository.delete(existingCategory);
     }
 }
