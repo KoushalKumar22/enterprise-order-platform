@@ -1,5 +1,7 @@
 package com.koushal.user.controller;
 
+import com.koushal.user.dto.LoginRequestDto;
+import com.koushal.user.dto.LoginResponseDto;
 import com.koushal.user.dto.UserRegistrationRequestDto;
 import com.koushal.user.dto.UserResponseDto;
 import com.koushal.user.service.UserService;
@@ -29,5 +31,16 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(
+            @Valid @RequestBody LoginRequestDto requestDto) {
+
+        LoginResponseDto response = userService.login(requestDto);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 
